@@ -1,0 +1,5 @@
+interface:
+  display_name: "Spec Review"
+  short_description: "Check a diff against the paper's method or plan"
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Research Dev Discipline"
+  short_description: "Behavior rules for coding agents in ML/NLP research repos"

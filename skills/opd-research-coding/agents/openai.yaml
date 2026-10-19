@@ -1,0 +1,3 @@
+interface:
+  display_name: "OPD Research Coding"
+  short_description: "Code and design on-policy distillation experiments"

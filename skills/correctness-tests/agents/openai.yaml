@@ -1,0 +1,3 @@
+interface:
+  display_name: "Correctness Tests"
+  short_description: "Few tests at seams where silent errors change results"
