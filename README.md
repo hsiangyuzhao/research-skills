@@ -1,6 +1,6 @@
 # Research Skills
 
-Agent skills for people whose code exists to answer research questions: medical image analysis, multimodal and audio language models, clinical and mental-health ML. Each skill is a folder under [`skills/`](./skills) with a `SKILL.md`, in the Agent Skills format that Claude Code, Codex and other harnesses read.
+Agent skills for people conduct researches on large language model and its downstream applications. Each skill is a folder under [`skills/`](./skills) with a `SKILL.md`, in the Agent Skills format that Claude Code, Codex and other harnesses read.
 
 Several general skills are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (v1.3.1, commit `f3fc563`), reshaped for research code rather than product engineering.
 

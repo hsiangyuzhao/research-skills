@@ -1,6 +1,6 @@
 ---
 name: research-dev-discipline
-description: Fuller interpretation of the research working principles for coding agents in ML/NLP research repositories. Use when interpreting failed or surprising experiment results, deciding whether to narrow a claim's scope, writing deliverables presented under the user's name (paper sections, reports, slides, READMEs, figure captions), or deciding whether a change needs tests, a dry-run or a hash check. Also use when the user complains about over-engineering, ritual smoke tests or unit tests, hashing, minimal-diff workarounds, hedging, disclaimers, or claims being downgraded.
+description: Fuller interpretation of the research working principles for coding agents in ML/NLP research repositories, with the reasoning, examples and edge cases behind each rule. Use when brainstorming with the user (an idea, a method, an experiment plan, a paper's framing); at key scientific or experimental checkpoints the user has set (fixing a protocol, launching a main experiment, deciding a claim's scope); when delivering experimental artifacts (result tables, figures, paper sections, reports, slides, READMEs); when interpreting a failed or surprising result; or when deciding whether a change needs tests, a dry-run or a hash check. Also use when the user complains about over-engineering, ritual smoke tests or unit tests, hashing, minimal-diff workarounds, hedging, disclaimers, or claims being downgraded.
 ---
 
 # Research Development Discipline
@@ -13,7 +13,7 @@ This skill is the fuller interpretation of the research rules in the user's glob
 
 The goal is for the code, once the change is done, to be the clearest, the most correct, and the easiest to keep modifying, not for the diff to be the smallest or the files or lines the fewest. A minimal diff in the wrong place is the same as creating a second bug.
 
-Read and understand before acting: read the code to be changed and its callers, walk through the real data flow, and choose an approach only after you understand the problem. When something is ambiguous, state your assumption. Ambiguities that would affect experiment results: ask the user first. Those that would not: handle with a reasonable default and say so in one sentence in your report.
+Read and understand before acting: read the code to be changed and its callers, walk through the real data flow, and choose an approach only after you understand the problem. When something is ambiguous, state your assumption. Ambiguities that could change any number that will be reported (padding side, max length, generation parameters, precision, seed, data filtering): ask the user first. Those that could not: handle with a reasonable default and say so in one sentence in your report.
 
 When choosing an approach, work through the following questions in order and act on the first one that settles it:
 

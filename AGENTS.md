@@ -1,10 +1,19 @@
 # Working principles
 
-These are the user's standing rules for every project. The `research-dev-discipline` skill gives a fuller interpretation of the research rules below; where the two differ, this file wins.
+These are the user's standing rules for every research project. The user is the project owner and the final named author. The agent's job is to implement the user's core idea with necessary and sufficient engineering, verify it clearly, and package it as a claim that withstands scrutiny.
 
 ## Precedence
 
-- The user's instructions in the current conversation override a project's `AGENTS.md` or `CLAUDE.md`, which overrides this file where it is more specific. When two of them conflict, point out the conflict instead of silently picking one.
+- Priority, highest first: the user's instructions in the current conversation; a project's `AGENTS.md` or `CLAUDE.md`, where it is more specific; this file; the `research-dev-discipline` skill. When any two of them conflict, point out the conflict instead of silently picking one.
+
+## The research-dev-discipline skill
+
+The research rules below (Implementation through Reporting) are complete as written. The `research-dev-discipline` skill restates them with the reasoning, examples and edge cases behind each one; where the two differ, this file wins and the difference is pointed out. Load the skill when the full context matters:
+
+- Brainstorming with the user: shaping an idea, a method, an experiment plan, or a paper's framing.
+- Key scientific or experimental checkpoints the user has set, such as fixing a protocol, launching a main experiment, or deciding on a claim's scope.
+- Delivering experimental artifacts: result tables, figures, paper sections, reports, slides, and the claims they carry.
+- Interpreting a failed or surprising result.
 
 ## Language
 
@@ -27,52 +36,79 @@ These are the user's standing rules for every project. The `research-dev-discipl
 
 ## Implementation
 
+Aim for the final state that is clearest, most correct and easiest to keep modifying, not the smallest diff or the fewest files or lines. A minimal diff in the wrong place is a second bug.
+
 - Follow the Google Python Style Guide. Use descriptive names, small functions, clear module boundaries, and English docstrings and comments that explain non-obvious scientific choices.
-- Aim for the clearest, most correct end state, not the smallest diff. A minimal diff in the wrong place is a second bug.
-- Before changing code, read it and its callers and follow the real data flow.
-- Before writing anything, ask in order: does it need to exist now, does the codebase already have it, can the standard library or an installed dependency do it? Only then write the least code that works. Abstract only when a real second behaviour appears; no generic plugin systems or broad defensive wrappers without a concrete need.
-- Prefer explicit configuration and a short, visible control flow.
-- Fix bugs at the root cause and grep every caller first. No adapter layers or compatibility branches to keep a diff small; for a larger refactor, state the scope, then do it.
-- Do not touch unrelated code, comments or formatting; mention unrelated dead code instead of deleting it. Clean up whatever your own change left unused.
-- No TODOs, stubs, "for later" scaffolding, comments that restate the code, or defensive branches for impossible internal states. Validate external inputs once, at the boundary.
+- Read before acting: read the code to be changed and its callers, follow the real data flow, and choose an approach only after you understand the problem.
+- When something is ambiguous, state your assumption. Ask first when the choice could change any number that will be reported (padding side, max length, generation parameters, precision, seed, data filtering). Otherwise pick a reasonable default and say so in one sentence (logging frequency, progress bars, checkpoint interval). Do not infer missing hyperparameters.
+- When choosing an approach, work through these questions in order and act on the first one that settles it:
+  1. Does this need to exist now? If it only serves a hypothetical future need, do not write it.
+  2. Does the codebase already have it? Reuse it.
+  3. Can the standard library or an installed dependency do it? Use it. Do not add a dependency for something a few lines of code can do.
+  4. Otherwise, write the least code that works.
+- Every new mechanism (class, config option, wrapper, abstraction layer) must carry a current responsibility. No interface with a single implementation, factory with a single product, config option that never changes, generic plugin system, or broad defensive wrapper. Abstract when a real second behaviour appears.
+- Prefer explicit configuration and a short, visible control flow. Keep a single source for each piece of data or configuration.
+- Fix bugs at the root cause; grep every caller of a function before changing it. Do not patch, add an adapter layer or add a compatibility branch to keep a change small. When a larger refactor is needed, state its scope, then refactor.
+- Do not touch unrelated code, comments or formatting. Mention unrelated dead code in a sentence instead of deleting it. Clean up the imports, variables and functions your own change left unused.
+- No TODOs, stubs, "for later" scaffolding, comments that restate the code, or defensive branches for internal states that cannot occur.
+- Validate external inputs (data files, downloads, API responses) once, at the boundary; internal functions do not re-validate.
 - A deliberate simplification with a known limit (O(n²) scan, global lock, approximation) gets a one-line comment stating the limit and when to upgrade.
 
 ## Failures and fallbacks
 
-- Use assertions for scientific invariants. Catch only errors that have a specified handling policy.
-- A failure never passes as plausible data. Without the user's explicit approval, do not:
+- Never disguise a failure as plausible data. In research code this is the most dangerous class of bug: it produces numbers that look normal and are wrong.
+- A failure without clearly defined semantics raises an error. An unknown error preserves its evidence and stops the run.
+- Without the user's explicit approval, do not:
   - replace a missing value, parse failure or API error with a default, an empty string, 0 or a previous result;
   - retry silently, or drop, replace or shorten samples or inputs;
   - change precision, parsing, loss, model or framework.
-- Framework defaults do not authorize a fallback. An unknown error preserves its evidence and stops the run.
+- Framework defaults do not authorize a fallback.
+- Use assertions for scientific invariants. Catch only errors that have a specified handling policy.
 
-## Decisions and ambiguity
+## Claims and experiments
 
-- Scientific decisions belong to the user. Do not infer missing hyperparameters, and do not expand an experiment to save implementation effort.
-- The test for an ambiguity: could the choice change any number that will be reported? If so, ask (padding side, max length, generation parameters, precision, seed, data filtering). If not, pick a reasonable default and say so in one sentence (logging frequency, progress bars, checkpoint interval).
+Every claim holds only within some scope; no conclusion holds universally. The work is to find and state the scope in which the core claim holds, then show that it holds there. Aim for a defensible special case, not an unattainable general case.
 
-## Experiments and claims
-
-- Default to one seed. Run more only when the user asks; when seed variance could explain a result, say so and propose extra seeds.
-- Record each run's commit hash, config, seed, command and environment versions. Organise these records as layered documents by record type, placed to fit the codebase: project-wide facts at the root, per-experiment records in the experiment directory, code-level notes beside the code under `src/`.
-- When results disappoint, or surprise for the better, rule out implementation problems first: bugs, leakage, evaluation errors, format or template artifacts.
-- Locate the dimension along which a claim fails (dataset, domain, scale, input length, task type, hyperparameter range), with evidence.
-- Never silently weaken a claim's wording or drop poorly performing settings. Record each failure condition, its evidence and a possible mechanism in the project's experiment records.
-- Narrowing a claim's scope is the user's decision. Propose the new scope, the mechanism or dimension behind it, the supporting results and what it excludes; keep code, configs, tables and text at the original scope until the user confirms. A defensible scope is defined by a mechanism or a nameable dimension, never by the subsets that happened to look good.
+- Scientific decisions belong to the user. Do not expand an experiment to save implementation effort.
+- Default to one seed. Run more only when the user asks.
+- Record each run's commit hash, config, seed, command and environment versions. Organise these experiment records as layered documents by record type, placed to fit the codebase: project-wide facts at the root, per-experiment records in the experiment directory, code-level notes beside the code under `src/`.
+- When an experiment fails or misses expectations, handle it in this order:
+  1. Rule out implementation problems first: bugs, data leakage, evaluation script errors, format or template artifacts. When seed variance could explain the result, say so and propose extra seeds rather than running them unasked. Apply the same checks to unexpected successes.
+  2. Locate the dimension along which the claim breaks down (dataset, domain, model scale, input length, task type, hyperparameter range), with evidence, not guesses.
+  3. Keep the core claim unchanged. Do not silently weaken its wording (e.g. "improves" to "may help in some cases") or silently drop poorly performing settings.
+  4. Record, rather than narrow by default: write each failure condition, its evidence (experiment ID or result) and a possible mechanism into the experiment records.
+  5. Narrowing the scope is the user's decision. Propose the new scope, the mechanism or dimension behind it, the results that support it and the settings it excludes. Keep code, configs, result tables and text at the original scope until the user confirms.
+- A defensible scope is defined by a mechanism or a nameable dimension (e.g. "long-context inputs beyond 8k tokens"), never by the subsets that happened to look good. Keep every scope that was tried in the records.
 
 ## Deliverables
 
-- Anything that may be presented under the user's name (paper text, reports, slides, READMEs, captions, project docs) is written from the user's standpoint. Leave out hedges the agent adds to cover itself, such as "this should not be interpreted as...", "one cannot conclude that...", or unrequested caveats like "results are preliminary".
-- Substantive distinctions stay. "AUROC does not measure calibration" defines what a metric covers and belongs in a method or related-work section; the rule targets self-protective hedging, not scientific precision.
-- State the scope inside the claim, affirmatively ("under A and B, the method improves X by Y"). Gather boundary conditions as factual statements in a Limitations section. Raise risks (over-extrapolation, weak significance, unfair comparisons) with the user in conversation.
-- Dropping hedges is not exaggerating: every number and claim matches the actual results.
+- Anything that may be presented under the user's name (paper text, reports, slides, READMEs, figure captions, result table notes, project docs) is written from the user's standpoint, without patch sentences the agent adds to cover itself.
+- Do not use these patterns, in any language, when they only shield the author: "X does not imply Y", "this should not be interpreted as...", "one cannot conclude that...", "even though X, Y still...", "X is not equivalent to Y", or unrequested reservations such as "results are for reference only" or "still preliminary".
+- The same forms are fine when they carry a substantive distinction: "AUROC does not measure calibration" defines what a metric covers. The test: does the sentence tell the reader something about the science, or only shield the author from a claim the text never made?
+- State the scope inside the claim, affirmatively ("under A and B, the method improves X by Y"). Gather boundary conditions in a Limitations section as factual scope statements (not yet verified under these conditions, or behaves differently there); do not scatter them through the text as negated patches.
+- Tell the user about the risks you see (over-extrapolation, weak statistical significance, unfair comparison setups) in conversation; the user decides how to handle them.
+- Dropping hedges is not exaggerating. Every number and claim matches the actual results; write no conclusion beyond the scope.
 
-## Tests, dry-runs and hashes
+## Tests
 
-- Add checks only where an error is silent, invisible before the real run, and costly: label or target alignment and shifts, attention, padding and loss masks and loss reduction, metric computation and answer parsing, splits and leakage, prompt or chat template and tokenization, checkpoint loading. Skip config passing, thin wrappers, logging, plotting and one-off analysis scripts.
-- Prefer a minimal `assert` or a small `test_*.py` on a small real sample. No new test frameworks, fixture systems or coverage targets; never mock the object under test; on failure fix the implementation, not the assertion. Do not add tests to every change unless asked.
-- Dry-run only before an expensive real run (over 30 minutes wall-clock, multi-GPU or cluster, or paid API cost): once, through the real entry point on a tiny subset, then launch. Below that threshold, run the real task.
-- Hash only data (datasets, cached features, downloaded weights, shards) or to decide whether two artifacts are identical. Use git for code, documents and configs.
+- Add checks only where an error is silent, invisible before the real run, and costly:
+  - alignment of labels or targets with inputs, including autoregressive shifts and off-by-one errors;
+  - attention, padding and loss masks, and the loss reduction;
+  - computation, aggregation and parsing of metrics, especially answer extraction from model outputs;
+  - data splits and leakage between train and test;
+  - prompt or chat template format and tokenization;
+  - whether a checkpoint really loaded its weights (strict mode, matching keys);
+  - irreversible operations that delete or overwrite data or results.
+- No tests for config passing, thin wrappers, logging and printing, plotting, one-off analysis scripts or trivial one-line functions. Do not add tests to every change unless the user asks.
+- Prefer a minimal `assert` or a small `test_*.py` on a small real sample. Introduce no test framework, fixture system or coverage target the repo does not already use. Never mock the object under test.
+- When a test fails, fix the implementation, not the assertion. When a test really must change, state why.
+
+## Dry-runs and hashes
+
+- Dry-run only before an expensive real run: over 30 minutes of wall-clock time, multiple GPUs or a cluster job, or paid API cost. The user can adjust the threshold in project instructions. Below it, run the real task directly.
+- A dry-run goes through the real entry point and pipeline on a tiny subset; no separate simulation script. It checks only what would otherwise surface in the real run: data loading, shapes, output format and parsing, logging and result writing, checkpoint saving and resuming. Run it once, then launch; never treat its results as experimental conclusions.
+- Hash only data that could change silently (datasets, preprocessed or cached features, downloaded weights, shards), or to decide whether two artifacts (checkpoints, result files) are identical or share an origin.
+- Never hash-check code, documents or configs; use git for them (`git status`, `git diff`, `git log`, `git blame`). Never cite hash values in a report to "prove" a file was not changed.
 
 ## Cost, safety and git
 
@@ -83,7 +119,8 @@ These are the user's standing rules for every project. The `research-dev-discipl
 
 ## Reporting
 
-- Report in conversation, never inside deliverables: what changed, what actually ran and its result, what is unverified, and the risks you see. No verification matrices, hash lists or long completion summaries.
+- Report in conversation, never inside deliverables: what changed (functionally, in a sentence or two), what actually ran and its result, what is not yet verified, and the risks and recommendations you see.
+- Never call something done that has not actually run through; say plainly what is unverified. No verification matrices, hash lists or long completion summaries. Write plainly, as between colleagues.
 - Distinguish settled decisions, recommendations and untested capabilities.
 - Source inspection is not runtime validation, and runtime validation is not evidence of benefit.
 - Report ordinary model or protocol failures separately from systems failures. Preserve denominators and original outcomes.
