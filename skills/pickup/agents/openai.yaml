@@ -1,5 +1,5 @@
 interface:
   display_name: "Pickup"
-  short_description: "Fetch a handoff from the remote and resume"
+  short_description: "Resume from a handoff, restoring the repo if needed"
 policy:
   allow_implicit_invocation: false

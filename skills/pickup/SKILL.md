@@ -1,13 +1,13 @@
 ---
 name: pickup
-description: Fetch the latest handoff from the git remote, check its snapshot and the artifacts outside git against this machine, and resume the work. Cancels if git or a remote is not set up.
+description: Resume work from a handoff. Inside the repository, fetch the latest handoff from the git remote; outside any repository, restore the repository named in a handoff file it can read. Then check the snapshot and the artifacts outside git on this machine, and continue. Cancels if git is not set up or the remote cannot be reached.
 argument-hint: "Path to a handoff file (optional; defaults to the pending one in .handoff/)"
 disable-model-invocation: true
 ---
 
 Resume work that an earlier session handed over with the `handoff` skill, possibly from another machine. The handoff travels through the git remote, so start from the remote, then find out how much of the recorded state holds here, and only then continue.
 
-Invoking this skill is the user's request to fetch, fast-forward and push the pickup commit. It does not override the project's other git rules: never force-push, and ask before any rebase or merge.
+Invoking this skill is the user's request to fetch (or restore the repository), fast-forward and push the pickup commit. It does not override the project's other git rules: never force-push, and ask before any rebase or merge.
 
 ## Process
 
@@ -15,9 +15,19 @@ Invoking this skill is the user's request to fetch, fast-forward and push the pi
 
 If any of these fails, cancel: tell the user which check failed and what to set up.
 
-- The working directory is inside a git repository (`git rev-parse --show-toplevel`).
-- A git identity is configured (`git config user.name` and `git config user.email` both non-empty).
+- A git identity is configured (`git config user.name` and `git config user.email` both non-empty). Never invent one.
+- The working directory is inside a git repository (`git rev-parse --show-toplevel`). If it is not, but a handoff file can be read (the path the user passed, or a Markdown file in the working directory whose first line starts with `# Handoff:`; if several, ask which), restore the repository from it first (step 1a).
 - A remote exists (`git remote` is non-empty) and is reachable (`git fetch` succeeds).
+
+### 1a. Restore the repository from a handoff file
+
+Use this when the working directory is not a git repository but holds or is given a handoff file. Other files in the directory are fine.
+
+1. Read the handoff. Its State snapshot must name the remote URL and the branch; if either is missing, cancel.
+2. Set up the repository in the working directory: `git init`, `git remote add origin <remote URL>`, `git fetch origin <branch>`. If the fetch fails (authentication, network, missing branch), remove the `.git` directory this step created, report the error, and cancel.
+3. Find conflicts: files already in the directory at a path the branch also tracks (`git ls-tree -r --name-only origin/<branch>`). A file whose content is identical to the tracked version (`git show origin/<branch>:<path>`) is not a conflict. List every real conflict and let the user decide, per file, whether to keep the local version, take the repository's, or move the local one aside. Do not overwrite or delete anything before they decide.
+4. Check out the branch (`git checkout -b <branch> --track origin/<branch>`), after moving aside identical copies and applying the user's decisions so the checkout does not refuse. Files that are not in the repository stay as untracked files; tell the user which.
+5. Continue at step 2, inside the restored repository. The handoff to follow is the one under `.handoff/` on the branch; if it differs from the file you were given, tell the user and ask which to follow.
 
 ### 2. Bring the checkout up to date
 

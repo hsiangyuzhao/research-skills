@@ -26,7 +26,7 @@ Research and engineering skills that apply to any project.
 - **[git-guardrails-claude-code](./skills/git-guardrails-claude-code/SKILL.md)**: Install, once per machine, a Claude Code hook that asks for your approval before any git command with no undo (clean, hard reset, discarding uncommitted changes, dropping stashes, force push).
 - **[spec-review](./skills/spec-review/SKILL.md)**: Check that the diff since a fixed point does what the paper's method section, experiment plan or issue says: data splits, preprocessing, model and training settings, metric computation.
 - **[handoff](./skills/handoff/SKILL.md)**: Commit and push the work and a handoff document (state snapshot, decisions, open questions, next steps, artifacts to copy by hand) to the git remote, for any harness or model on any machine to pick up. Cancels without git or a remote.
-- **[pickup](./skills/pickup/SKILL.md)**: Fetch the pending handoff from the git remote, check its snapshot and the artifacts outside git on this machine, report mismatches, and continue once you confirm.
+- **[pickup](./skills/pickup/SKILL.md)**: Resume from a handoff: fetch it from the git remote inside the repository, or restore the repository it names from a copied handoff file when run outside one (asking you about any conflicting files). Then check its snapshot and the artifacts outside git on this machine, report mismatches, and continue once you confirm.
 - **[to-questionnaire](./skills/to-questionnaire/SKILL.md)**: Turn a decision you can't make alone into a questionnaire for the one person who can (a clinical collaborator, say), written in their vocabulary.
 
 ## Domain
