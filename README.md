@@ -16,7 +16,7 @@ Research and engineering skills that apply to any project.
 
 **Model-invoked**
 
-- **[research-dev-discipline](./skills/research-dev-discipline/SKILL.md)**: Behaviour rules for coding agents in ML/NLP research repos: simple and correct end states over minimal diffs, claim and scope handling when experiments fail, deliverables in the user's voice, risk-based testing, and when a dry-run or a hash is worth it.
+- **[research-dev-discipline](./skills/research-dev-discipline/SKILL.md)**: The fuller interpretation of the research rules in [AGENTS.md](./AGENTS.md), with the reasoning, examples and edge cases behind each one. Loaded when brainstorming, at scientific or experimental checkpoints you set, when delivering experimental artifacts, and when interpreting a failed or surprising result.
 - **[diagnosing-bugs](./skills/diagnosing-bugs/SKILL.md)**: Diagnosis loop for hard and silent bugs in research code: build a fast signal that goes red on this bug, minimise, hypothesise, instrument, fix with a regression test, and name any results that need re-running.
 - **[correctness-tests](./skills/correctness-tests/SKILL.md)**: The few tests research code needs, at seams where a silent error changes results (metrics, transforms, splits, preprocessing, losses), each checked against an independent oracle.
 - **[grilling](./skills/grilling/SKILL.md)**: Relentless interview about a plan, experiment design, paper framing, proposal or rebuttal, in rounds of questions with a recommended answer each. Facts are the agent's job, decisions are yours. Pins down vague terms, checks your claims against the code, and makes sure the evaluation protocol is covered.
@@ -25,7 +25,8 @@ Research and engineering skills that apply to any project.
 
 - **[git-guardrails-claude-code](./skills/git-guardrails-claude-code/SKILL.md)**: Install, once per machine, a Claude Code hook that asks for your approval before any git command with no undo (clean, hard reset, discarding uncommitted changes, dropping stashes, force push).
 - **[spec-review](./skills/spec-review/SKILL.md)**: Check that the diff since a fixed point does what the paper's method section, experiment plan or issue says: data splits, preprocessing, model and training settings, metric computation.
-- **[handoff](./skills/handoff/SKILL.md)**: Compact the current conversation into a document another agent, in any harness or on any model, can pick up.
+- **[handoff](./skills/handoff/SKILL.md)**: Commit and push the work and a handoff document (state snapshot, decisions, open questions, next steps, artifacts to copy by hand) to the git remote, for any harness or model on any machine to pick up. Cancels without git or a remote.
+- **[pickup](./skills/pickup/SKILL.md)**: Fetch the pending handoff from the git remote, check its snapshot and the artifacts outside git on this machine, report mismatches, and continue once you confirm.
 - **[to-questionnaire](./skills/to-questionnaire/SKILL.md)**: Turn a decision you can't make alone into a questionnaire for the one person who can (a clinical collaborator, say), written in their vocabulary.
 
 ## Domain
@@ -43,4 +44,4 @@ Skills for one research direction, each with a knowledge base under `references/
 
 ## License
 
-MIT; see [LICENSE](./LICENSE). Adapted from mattpocock/skills, and keeping Matt Pocock's copyright: `diagnosing-bugs`, `correctness-tests` (from `tdd`), `grilling`, `git-guardrails-claude-code`, `spec-review` (from `code-review`), `handoff`, `to-questionnaire`. Original to this repo: `research-dev-discipline`, `opd-research-coding` and `AGENTS.md`.
+MIT; see [LICENSE](./LICENSE). Adapted from mattpocock/skills, and keeping Matt Pocock's copyright: `diagnosing-bugs`, `correctness-tests` (from `tdd`), `grilling`, `git-guardrails-claude-code`, `spec-review` (from `code-review`), `handoff`, `to-questionnaire`. Original to this repo: `research-dev-discipline`, `pickup`, `opd-research-coding` and `AGENTS.md`.

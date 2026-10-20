@@ -1,0 +1,5 @@
+interface:
+  display_name: "Pickup"
+  short_description: "Fetch a handoff from the remote and resume"
+policy:
+  allow_implicit_invocation: false
