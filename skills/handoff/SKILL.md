@@ -54,6 +54,7 @@ Written <ISO 8601 date and time with timezone> by <harness and model> on <machin
 <for each: path, size, why it is needed, where to put it on the next machine; or none>
 
 ## Goal
+<if the repository has NARRATIVE.md: the part of the current micro story this work serves, and any change to the story during the session, marked confirmed by the user or agent draft>
 ## Done so far
 ## Decisions settled
 <each decision, its reason, and where it is recorded>

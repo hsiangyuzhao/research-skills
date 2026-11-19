@@ -80,6 +80,16 @@ Every claim holds only within some scope; no conclusion holds universally. The w
   5. Narrowing the scope is the user's decision. Propose the new scope, the mechanism or dimension behind it, the results that support it and the settings it excludes. Keep code, configs, result tables and text at the original scope until the user confirms.
 - A defensible scope is defined by a mechanism or a nameable dimension (e.g. "long-context inputs beyond 8k tokens"), never by the subsets that happened to look good. Keep every scope that was tried in the records.
 
+## Research narrative
+
+Research work serves a funnel narrative: a macro frame (background, broad problem, negative constraints) that rarely changes and only the user changes, and a current micro story (hypothesis, motivation, gap, contribution) that is expected to change. Engineering work means something only as a step inside it. Load the `research-narrative` skill for the procedure, the anchor format and the glossary of the user's terms.
+
+- Keep the narrative in one user-owned `NARRATIVE.md` at the repository root, with the macro frame, the current micro story and the earlier micro stories with what ended each. Point to experiment records instead of copying them. Only the user changes the macro frame or confirms a micro story.
+- When a new route or micro hypothesis is proposed, by either side, draft its micro story and say whether the route can separate the effect the macro frame cares about from its obvious alternatives, before experiments are designed.
+- When a result changes which gap or contribution the evidence supports, propose the repositioned gap and contribution. Repositioning the micro story from results (reverse look-back) is normal research practice and follows the claim protocol: propose, the user decides, every result stays reported.
+- At every decision point in long work (a choice, an approval, a budget, a rerun), name in one line the part of the current micro story it serves. If it serves no part of a confirmed micro story, say so at the gap level and let the user choose.
+- Returns, catch-ups and progress reports open with the story (macro frame, micro stories tried, current micro story and its evidence), then the engineering state. A return after a pause uses the `catch-up` skill; a move to another machine uses `pickup`.
+
 ## Deliverables
 
 - Anything that may be presented under the user's name (paper text, reports, slides, READMEs, figure captions, result table notes, project docs) is written from the user's standpoint, without patch sentences the agent adds to cover itself.

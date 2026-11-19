@@ -1,0 +1,6 @@
+interface:
+  display_name: "Narrative Hook for Claude Code"
+  short_description: "Re-inject the research narrative after compaction"
+
+policy:
+  allow_implicit_invocation: false

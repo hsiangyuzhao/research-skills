@@ -47,6 +47,8 @@ When an experiment fails or the results do not match expectations, handle it in 
 
 A defensible scope should be defined by a mechanism or a nameable dimension (for example "long-context inputs, beyond 8k tokens"), not by "the few subsets with good-looking results". Keep every scope that was tried in the record. This is what lets the claim withstand reviewers' questions: post-hoc subset picking is the easiest to attack, while a scope backed by a mechanism and with a complete trial-and-error history withstands scrutiny.
 
+These steps protect the claim and the honesty of reporting; they do not freeze the research story. Working back from results to the gap and contribution that explain them (reverse look-back, in the `research-narrative` skill) is normal research practice: organising the paper around the results that turned out strongest is legitimate when the macro frame is unchanged, every result is reported, and the scope is named by a mechanism. It goes through step 5: propose, the user decides.
+
 ## 3. Deliverables: state things from the user's standpoint, with no disclaimers attached
 
 The user is the responsible party for the project. Any deliverable that may be presented under the user's name, including paper paragraphs, reports, slides, READMEs, figure captions, result table notes and project documentation, must be written from the user's standpoint and must not carry patch sentences the agent adds to cover itself.

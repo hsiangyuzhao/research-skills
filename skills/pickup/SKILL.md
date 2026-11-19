@@ -63,6 +63,8 @@ Report each item as matching, changed, or not checkable:
 
 Tell the user, briefly: the goal, what was done, every mismatch and missing artifact from step 5, the open questions, and the first next step as you now understand it. Do not start the next steps until the user confirms and every artifact those steps need is in place.
 
+This skill moves the engineering state; it does not retell the research story. If the handoff is more than about a week old, or the user says they have been away, tell them that `catch-up` retells the story and what changed, and run it after this pickup is confirmed.
+
 ### 7. Mark it picked up, push, and continue
 
 Once the user confirms:
